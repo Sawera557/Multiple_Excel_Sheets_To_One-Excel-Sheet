@@ -1,0 +1,39 @@
+import openpyxl
+import xlsxwriter
+
+
+def excelSheets(path):
+   wb = openpyxl.load_workbook(path)
+   tempList = []
+   fin = [] 
+   ws = wb.sheetnames
+   for isheet in ws:
+     wer = wb[isheet]
+     print(isheet)
+     for row in wer['A{}:A{}'.format(wer.min_row,wer.max_row)]:             
+       for cell in row:
+          if cell != None:
+             tempList.append(cell.value)
+   return tempList
+
+def clean_List(tempList1):
+    fin = []
+    for val in tempList1:
+      if val != None : 
+        fin.append(val)
+    return fin
+
+   
+def main():
+  path = '/content/Observations.xlsx' #path to your excel file
+  all_data = excelSheets(path)
+  clean_data = clean_List(all_data)
+  #New file created 
+  with xlsxwriter.Workbook('test.xlsx') as workbook:
+      worksheet = workbook.add_worksheet()
+
+      for row, data in enumerate(clean_data):
+          worksheet.write_string(row, 0, data)
+
+if __name__ == "__main__":
+    main()
